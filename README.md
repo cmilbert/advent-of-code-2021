@@ -1,5 +1,7 @@
 # Repository for [Advent of Code 2021](https://adventofcode.com/)
 
+![Rust Tests](https://github.com/cmilbert/advent-of-code-2021/actions/workflows/rust.yml/badge.svg)
+
 # Setup and Configuration
 ## Rust
 1. Install Rust:
