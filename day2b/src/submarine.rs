@@ -75,7 +75,7 @@ mod tests_day2a {
         submarine.forward(2);
         assert_eq!(submarine.horizontal_position, 7);
         assert_eq!(submarine.aim, 2);
-        assert_eq!(submarine.vertical_position, 24)
+        assert_eq!(submarine.vertical_position, 14)
     }
 
     #[test]
@@ -112,10 +112,10 @@ mod tests_day2a {
         assert_eq!(submarine.horizontal_position, 5);
 
         submarine.process_instruction("up 5".to_string());
-        assert_eq!(submarine.vertical_position, 5);
+        assert_eq!(submarine.aim, -5);
 
         submarine.process_instruction("down 10".to_string());
-        assert_eq!(submarine.vertical_position, -5);
+        assert_eq!(submarine.aim, 5);
     }
 
     #[test]
