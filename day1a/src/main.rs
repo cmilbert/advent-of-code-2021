@@ -1,10 +1,5 @@
-use ::cmilbert_aoc_day1a::{
-    read_lines_from_input_file,
-    count_of_increasing_measurements
-};
-use std::{
-    io::{Error},
-};
+use ::cmilbert_aoc_day1a::{count_of_increasing_measurements, read_lines_from_input_file};
+use std::io::Error;
 
 fn main() -> Result<(), Error> {
     let measurements = read_lines_from_input_file("input.txt")?;

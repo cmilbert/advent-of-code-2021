@@ -20,7 +20,7 @@ pub fn count_of_increasing_measurements(measurements: Vec<i32>) -> i32 {
         }
         previous_value = line;
     }
-    return number_of_increasing_readings
+    return number_of_increasing_readings;
 }
 
 #[cfg(test)]
