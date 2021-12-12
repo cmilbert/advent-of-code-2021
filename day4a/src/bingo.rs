@@ -4,7 +4,6 @@ use std::{
     path::Path,
 };
 
-#[derive(Debug)]
 struct BingoCell {
     number_in_cell: isize,
     number_called: bool,
@@ -38,6 +37,7 @@ impl BingoGame {
         file_lines.drain(0..1);
 
         while file_lines.len() > 0 {
+            file_lines.drain(0..1); // Drain new line before board
             let mut new_board: Vec<Vec<BingoCell>> = Vec::new();
 
             // For each of 5 rows create a new board row
@@ -46,7 +46,7 @@ impl BingoGame {
                     self.parse_bingo_board_line(file_lines[i].to_string());
                 new_board.push(new_row);
             }
-            file_lines.drain(0..6); // Remove 6 lines
+            file_lines.drain(0..5); // Remove 6 lines
             self.boards.push(new_board);
         }
     }
@@ -73,6 +73,18 @@ impl BingoGame {
         }
         return return_vector;
     }
+
+    fn process_draw(&mut self, number_drawn: &isize) {
+        for bingo_board in self.boards.iter_mut() {
+            for bingo_board_row in bingo_board.iter_mut() {
+                for bingo_board_cell in bingo_board_row.iter_mut() {
+                    if bingo_board_cell.number_in_cell == *number_drawn {
+                        bingo_board_cell.number_called = true;
+                    }
+                }
+            }
+        }
+    }
 }
 
 #[cfg(test)]
@@ -93,5 +105,23 @@ mod tests_day4a {
         bingo_game.read_lines_from_input_file("sample_input.txt");
 
         assert_eq!(bingo_game.boards.len(), 3);
+    }
+
+    #[test]
+    fn test_mark_bingo_cells_from_draws() {
+        let mut bingo_game = BingoGame::new();
+        bingo_game.read_lines_from_input_file("sample_input.txt");
+
+        for i in 0..5 {
+            let number_drawn: isize = bingo_game.draws[i];
+            bingo_game.process_draw(&number_drawn)
+        }
+
+        let bingo_board: &BingoBoard = bingo_game.boards.get(0).unwrap();
+        assert_eq!(bingo_board[0][3].number_called, true);
+        assert_eq!(bingo_board[1][3].number_called, true);
+        assert_eq!(bingo_board[2][3].number_called, false);
+        assert_eq!(bingo_board[3][3].number_called, false);
+        assert_eq!(bingo_board[4][3].number_called, false);
     }
 }
