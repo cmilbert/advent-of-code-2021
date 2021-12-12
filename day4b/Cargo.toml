@@ -1,0 +1,15 @@
+[package]
+name = "cmilbert_aoc_day4b"
+version = "0.1.0"
+edition = "2021"
+authors = ["Chris Milbert <cmilbert@>"]
+
+[lib]
+name = "cmilbert_aoc_day4b"
+path = "src/bingo.rs"
+
+[[bin]]
+name = "cmilbert_aoc_day4b"
+path = "src/main.rs"
+
+[dependencies]
