@@ -4,6 +4,8 @@ use std::{
     path::Path,
 };
 
+const BINGO_BOARD_SIZE: usize = 5;
+
 struct BingoCell {
     number_in_cell: isize,
     number_called: bool,
@@ -85,6 +87,67 @@ impl BingoGame {
             }
         }
     }
+
+    fn get_empty_board(&self) -> BingoBoard {
+        let empty_board: Vec<Vec<BingoCell>> = Vec::new();
+        return empty_board;
+    }
+
+    fn check_boards(&self) -> Option<&BingoBoard> {
+        for board in self.boards.iter() {
+            let row_win = self.check_board_rows(&board);
+            let column_win = self.check_board_columns(&board);
+            if row_win || column_win {
+                return Some(board);
+            }
+        }
+        return None;
+    }
+
+    fn check_board_rows(&self, bingo_board: &BingoBoard) -> bool {
+        for i in 0..bingo_board.len() {
+            let mut row_count: usize = 0;
+            for j in 0..bingo_board[i].len() {
+                if bingo_board[i][j].number_called == true {
+                    row_count += 1;
+                }
+            }
+            if row_count == BINGO_BOARD_SIZE {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    fn check_board_columns(&self, bingo_board: &BingoBoard) -> bool {
+        let mut column_counts: Vec<usize> = vec![0; bingo_board.len()];
+        for i in 0..bingo_board.len() {
+            for j in 0..bingo_board[i].len() {
+                if bingo_board[j][i].number_called == true {
+                    column_counts[i] += 1;
+                }
+            }
+        }
+
+        for i in 0..column_counts.len() {
+            if column_counts[i] == BINGO_BOARD_SIZE {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    fn unmarked_cell_sum(&self, bingo_board: &BingoBoard) -> isize {
+        let mut unmarked_sum: isize = 0;
+        for i in 0..bingo_board.len() {
+            for j in 0..bingo_board[i].len() {
+                if bingo_board[i][j].number_called == false {
+                    unmarked_sum += bingo_board[i][j].number_in_cell;
+                }
+            }
+        }
+        return unmarked_sum;
+    }
 }
 
 #[cfg(test)]
@@ -118,10 +181,34 @@ mod tests_day4a {
         }
 
         let bingo_board: &BingoBoard = bingo_game.boards.get(0).unwrap();
+        assert_eq!(bingo_board.len(), BINGO_BOARD_SIZE);
         assert_eq!(bingo_board[0][3].number_called, true);
         assert_eq!(bingo_board[1][3].number_called, true);
         assert_eq!(bingo_board[2][3].number_called, false);
         assert_eq!(bingo_board[3][3].number_called, false);
         assert_eq!(bingo_board[4][3].number_called, false);
+    }
+
+    #[test]
+    fn test_check_boards() {
+        let mut bingo_game = BingoGame::new();
+        bingo_game.read_lines_from_input_file("sample_input.txt");
+
+        for i in 0..2 {
+            let number_drawn: isize = bingo_game.draws[i];
+            bingo_game.process_draw(&number_drawn)
+        }
+
+        let winner_found: Option<&BingoBoard> = bingo_game.check_boards();
+        assert_eq!(winner_found.is_none(), true);
+
+        for i in 2..12 {
+            // Should win on the 12th draw
+            let number_drawn: isize = bingo_game.draws[i];
+            bingo_game.process_draw(&number_drawn)
+        }
+
+        let winner_found: Option<&BingoBoard> = bingo_game.check_boards();
+        assert_eq!(winner_found.is_some(), true);
     }
 }
