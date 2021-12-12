@@ -6,15 +6,15 @@ use std::{
 
 const BINGO_BOARD_SIZE: usize = 5;
 
-struct BingoCell {
-    number_in_cell: isize,
+pub struct BingoCell {
+    number_in_cell: usize,
     number_called: bool,
 }
 
 type BingoBoard = Vec<Vec<BingoCell>>;
 
 pub struct BingoGame {
-    draws: Vec<isize>,
+    draws: Vec<usize>,
     boards: Vec<BingoBoard>,
 }
 
@@ -53,7 +53,7 @@ impl BingoGame {
         }
     }
 
-    fn parse_draws(&self, draw_line: String) -> Vec<isize> {
+    fn parse_draws(&self, draw_line: String) -> Vec<usize> {
         return draw_line
             .split(",")
             .map(|s| s.trim())
@@ -66,7 +66,7 @@ impl BingoGame {
         let mut return_vector: Vec<BingoCell> = Vec::new();
         let splits = bingo_board_line.split_whitespace();
         for split in splits {
-            let parsed_value: isize = split.parse().unwrap();
+            let parsed_value: usize = split.parse().unwrap();
             let bingo_cell = BingoCell {
                 number_in_cell: parsed_value,
                 number_called: false,
@@ -76,11 +76,11 @@ impl BingoGame {
         return return_vector;
     }
 
-    fn process_draw(&mut self, number_drawn: &isize) {
+    fn process_draw(&mut self, number_drawn: usize) {
         for bingo_board in self.boards.iter_mut() {
             for bingo_board_row in bingo_board.iter_mut() {
                 for bingo_board_cell in bingo_board_row.iter_mut() {
-                    if bingo_board_cell.number_in_cell == *number_drawn {
+                    if bingo_board_cell.number_in_cell == number_drawn {
                         bingo_board_cell.number_called = true;
                     }
                 }
@@ -88,12 +88,7 @@ impl BingoGame {
         }
     }
 
-    fn get_empty_board(&self) -> BingoBoard {
-        let empty_board: Vec<Vec<BingoCell>> = Vec::new();
-        return empty_board;
-    }
-
-    fn check_boards(&self) -> Option<&BingoBoard> {
+    pub fn check_boards(&self) -> Option<&BingoBoard> {
         for board in self.boards.iter() {
             let row_win = self.check_board_rows(&board);
             let column_win = self.check_board_columns(&board);
@@ -137,8 +132,8 @@ impl BingoGame {
         return false;
     }
 
-    fn unmarked_cell_sum(&self, bingo_board: &BingoBoard) -> isize {
-        let mut unmarked_sum: isize = 0;
+    pub fn unmarked_cell_sum(&self, bingo_board: &BingoBoard) -> usize {
+        let mut unmarked_sum: usize = 0;
         for i in 0..bingo_board.len() {
             for j in 0..bingo_board[i].len() {
                 if bingo_board[i][j].number_called == false {
@@ -147,6 +142,29 @@ impl BingoGame {
             }
         }
         return unmarked_sum;
+    }
+
+    pub fn play_until_winner(&mut self) -> usize {
+        let mut winning_value: usize = 0;
+        let mut draw_position: usize = 0;
+        while winning_value == 0 && draw_position < self.draws.len() {
+            let number_drawn: usize = self.draws[draw_position];
+            self.process_draw(number_drawn);
+            draw_position += 1;
+
+            if draw_position > BINGO_BOARD_SIZE {
+                // Have to draw at least one row/column size to win
+                let winner_found: Option<&BingoBoard> = self.check_boards();
+
+                if winner_found.is_some() {
+                    let unmarked_cell_sum: usize = self.unmarked_cell_sum(winner_found.unwrap());
+                    winning_value = unmarked_cell_sum * number_drawn;
+                    break;
+                }
+            }
+        }
+
+        return winning_value;
     }
 }
 
@@ -176,8 +194,8 @@ mod tests_day4a {
         bingo_game.read_lines_from_input_file("sample_input.txt");
 
         for i in 0..5 {
-            let number_drawn: isize = bingo_game.draws[i];
-            bingo_game.process_draw(&number_drawn)
+            let number_drawn: usize = bingo_game.draws[i];
+            bingo_game.process_draw(number_drawn)
         }
 
         let bingo_board: &BingoBoard = bingo_game.boards.get(0).unwrap();
@@ -195,8 +213,8 @@ mod tests_day4a {
         bingo_game.read_lines_from_input_file("sample_input.txt");
 
         for i in 0..2 {
-            let number_drawn: isize = bingo_game.draws[i];
-            bingo_game.process_draw(&number_drawn)
+            let number_drawn: usize = bingo_game.draws[i];
+            bingo_game.process_draw(number_drawn)
         }
 
         let winner_found: Option<&BingoBoard> = bingo_game.check_boards();
@@ -204,11 +222,20 @@ mod tests_day4a {
 
         for i in 2..12 {
             // Should win on the 12th draw
-            let number_drawn: isize = bingo_game.draws[i];
-            bingo_game.process_draw(&number_drawn)
+            let number_drawn: usize = bingo_game.draws[i];
+            bingo_game.process_draw(number_drawn)
         }
 
         let winner_found: Option<&BingoBoard> = bingo_game.check_boards();
         assert_eq!(winner_found.is_some(), true);
+    }
+
+    #[test]
+    fn test_run_game() {
+        let mut bingo_game = BingoGame::new();
+        bingo_game.read_lines_from_input_file("sample_input.txt");
+
+        let winning_value: usize = bingo_game.play_until_winner();
+        assert_eq!(winning_value, 4512);
     }
 }
