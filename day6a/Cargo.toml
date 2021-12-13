@@ -1,0 +1,15 @@
+[package]
+name = "cmilbert_aoc_day6a"
+version = "0.1.0"
+edition = "2021"
+authors = ["Chris Milbert <cmilbert@>"]
+
+[lib]
+name = "cmilbert_aoc_day6a"
+path = "src/lantern_fish.rs"
+
+[[bin]]
+name = "cmilbert_aoc_day6a"
+path = "src/main.rs"
+
+[dependencies]
