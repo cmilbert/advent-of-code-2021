@@ -1,0 +1,15 @@
+[package]
+name = "cmilbert_aoc_day5b"
+version = "0.1.0"
+edition = "2021"
+authors = ["Chris Milbert <cmilbert@>"]
+
+[lib]
+name = "cmilbert_aoc_day5b"
+path = "src/hydrothermal_map.rs"
+
+[[bin]]
+name = "cmilbert_aoc_day5b"
+path = "src/main.rs"
+
+[dependencies]
