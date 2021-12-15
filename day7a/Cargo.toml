@@ -1,0 +1,15 @@
+[package]
+name = "cmilbert_aoc_day7a"
+version = "0.1.0"
+edition = "2021"
+authors = ["Chris Milbert <cmilbert@>"]
+
+[lib]
+name = "cmilbert_aoc_day7a"
+path = "src/crab.rs"
+
+[[bin]]
+name = "cmilbert_aoc_day7a"
+path = "src/main.rs"
+
+[dependencies]
