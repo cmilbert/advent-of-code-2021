@@ -1,0 +1,15 @@
+[package]
+name = "cmilbert_aoc_day8a"
+version = "0.1.0"
+edition = "2021"
+authors = ["Chris Milbert <cmilbert@>"]
+
+[lib]
+name = "cmilbert_aoc_day8a"
+path = "src/seven_segment.rs"
+
+[[bin]]
+name = "cmilbert_aoc_day8a"
+path = "src/main.rs"
+
+[dependencies]
