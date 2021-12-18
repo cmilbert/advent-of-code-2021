@@ -18,6 +18,12 @@ pub struct LanternFishSchool {
     pub fish: Vec<LanternFish>,
 }
 
+impl Default for LanternFishSchool {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl LanternFishSchool {
     pub fn new() -> Self {
         LanternFishSchool { fish: Vec::new() }
@@ -30,7 +36,7 @@ impl LanternFishSchool {
         for line in reader.lines() {
             let line_values: Vec<usize> = line
                 .unwrap()
-                .split(",")
+                .split(',')
                 .map(|s| s.trim())
                 .filter(|s| !s.is_empty())
                 .map(|s| s.parse().unwrap())
@@ -72,14 +78,18 @@ impl LanternFishSchool {
     }
 
     pub fn add_fish(&mut self, days_since_spawn: usize) {
-        self.fish.push(LanternFish {
-            days_since_spawn: days_since_spawn,
-        })
+        self.fish.push(LanternFish { days_since_spawn })
     }
 }
 
 pub struct LanternFishThreader {
     lantern_fish_schools: Vec<LanternFishSchool>,
+}
+
+impl Default for LanternFishThreader {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl LanternFishThreader {
@@ -97,7 +107,7 @@ impl LanternFishThreader {
         for line in reader.lines() {
             let line_values: Vec<usize> = line
                 .unwrap()
-                .split(",")
+                .split(',')
                 .map(|s| s.trim())
                 .filter(|s| !s.is_empty())
                 .map(|s| s.parse().unwrap())
@@ -119,19 +129,19 @@ impl LanternFishThreader {
             child_threads.push(thread::spawn(move || -> usize {
                 lantern_fish_school.simulate_iterations(iterations);
                 let total_fish_for_school: usize = lantern_fish_school.fish.len();
-                return total_fish_for_school;
+                total_fish_for_school
             }));
         }
 
-        return child_threads
+        child_threads
             .into_iter()
             .map(|c| c.join().unwrap())
-            .sum::<usize>();
+            .sum::<usize>()
     }
 }
 
 #[cfg(test)]
-mod tests_day6a {
+mod tests_day6b {
     use super::*;
 
     #[test]
