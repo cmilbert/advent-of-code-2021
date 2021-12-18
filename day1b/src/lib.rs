@@ -21,8 +21,8 @@ pub fn count_of_increasing_measurements_sliding_window(
     for i in 0..(measurements.len() - window_size) {
         current_sum = 0;
 
-        for j in i..(i + window_size) {
-            current_sum += measurements[j];
+        for measurement in measurements.iter().skip(i).take(window_size) {
+            current_sum += measurement;
         }
 
         if current_sum > previous_sum {
@@ -31,7 +31,7 @@ pub fn count_of_increasing_measurements_sliding_window(
 
         previous_sum = current_sum;
     }
-    return number_of_increasing_measurements;
+    number_of_increasing_measurements
 }
 
 #[cfg(test)]
