@@ -8,6 +8,12 @@ pub struct PowerDiagnostic {
     pub life_support_rating: isize,
 }
 
+impl Default for PowerDiagnostic {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl PowerDiagnostic {
     pub fn new() -> Self {
         PowerDiagnostic {
@@ -20,7 +26,7 @@ impl PowerDiagnostic {
         }
     }
 
-    pub fn calculate_gamma_rate(&mut self, binary_values: &Vec<String>) {
+    pub fn calculate_gamma_rate(&mut self, binary_values: &[String]) {
         let mut gamma_string: String = "".to_owned();
 
         for i in 0..binary_values[0].len() {
@@ -36,9 +42,9 @@ impl PowerDiagnostic {
             }
 
             if count_of_one > count_of_zero {
-                gamma_string.push_str("1");
+                gamma_string.push('1');
             } else {
-                gamma_string.push_str("0");
+                gamma_string.push('0');
             }
         }
 
@@ -46,7 +52,7 @@ impl PowerDiagnostic {
         self.calculate_power_consumption();
     }
 
-    pub fn calculate_epsilon_rate(&mut self, binary_values: &Vec<String>) {
+    pub fn calculate_epsilon_rate(&mut self, binary_values: &[String]) {
         let mut epsilon_string: String = "".to_owned();
 
         for i in 0..binary_values[0].len() {
@@ -62,9 +68,9 @@ impl PowerDiagnostic {
             }
 
             if count_of_one < count_of_zero {
-                epsilon_string.push_str("1");
+                epsilon_string.push('1');
             } else {
-                epsilon_string.push_str("0");
+                epsilon_string.push('0');
             }
         }
 
@@ -76,15 +82,15 @@ impl PowerDiagnostic {
         self.power_consumption = self.gamma_rate * self.epsilon_rate;
     }
 
-    pub fn calculate_oxygen_generator_rating(&mut self, binary_values: &Vec<String>) {
+    pub fn calculate_oxygen_generator_rating(&mut self, binary_values: &[String]) {
         let mut oxygen_generator_rating_string: String = "".to_owned();
-        let mut values_to_process: Vec<String> = binary_values.clone();
+        let mut values_to_process: Vec<String> = binary_values.to_owned();
 
         for i in 0..binary_values[0].len() {
             let mut count_of_one = 0;
             let mut count_of_zero = 0;
-            for j in 0..values_to_process.len() {
-                let processing_character = values_to_process[j].chars().nth(i).unwrap();
+            for value in &values_to_process {
+                let processing_character = value.chars().nth(i).unwrap();
                 if processing_character == '1' {
                     count_of_one += 1;
                 } else {
@@ -96,14 +102,13 @@ impl PowerDiagnostic {
             let keep_values_starting_with_zero: bool = count_of_one < count_of_zero;
 
             let mut updated_values = Vec::new();
-            for j in 0..values_to_process.len() {
-                let value = values_to_process[j].to_string();
+            for value in &values_to_process {
                 let character_value_at_position: char = value.chars().nth(i).unwrap();
 
-                if character_value_at_position == '1' && keep_values_starting_with_one {
-                    updated_values.push(value);
-                } else if character_value_at_position == '0' && keep_values_starting_with_zero {
-                    updated_values.push(value);
+                if (character_value_at_position == '1' && keep_values_starting_with_one)
+                    || (character_value_at_position == '0' && keep_values_starting_with_zero)
+                {
+                    updated_values.push(value.clone());
                 }
             }
             values_to_process = updated_values;
@@ -119,15 +124,15 @@ impl PowerDiagnostic {
         self.calculate_life_support_rating();
     }
 
-    pub fn calculate_co2_scrubber_rating(&mut self, binary_values: &Vec<String>) {
+    pub fn calculate_co2_scrubber_rating(&mut self, binary_values: &[String]) {
         let mut co2_scrubber_rating_string: String = "".to_owned();
-        let mut values_to_process: Vec<String> = binary_values.clone();
+        let mut values_to_process: Vec<String> = binary_values.to_owned();
 
         for i in 0..binary_values[0].len() {
             let mut count_of_one = 0;
             let mut count_of_zero = 0;
-            for j in 0..values_to_process.len() {
-                let processing_character = values_to_process[j].chars().nth(i).unwrap();
+            for value in &values_to_process {
+                let processing_character = value.chars().nth(i).unwrap();
                 if processing_character == '1' {
                     count_of_one += 1;
                 } else {
@@ -139,14 +144,13 @@ impl PowerDiagnostic {
             let keep_values_starting_with_zero: bool = count_of_one >= count_of_zero;
 
             let mut updated_values = Vec::new();
-            for j in 0..values_to_process.len() {
-                let value = values_to_process[j].to_string();
+            for value in &values_to_process {
                 let character_value_at_position: char = value.chars().nth(i).unwrap();
 
-                if character_value_at_position == '1' && keep_values_starting_with_one {
-                    updated_values.push(value);
-                } else if character_value_at_position == '0' && keep_values_starting_with_zero {
-                    updated_values.push(value);
+                if (character_value_at_position == '1' && keep_values_starting_with_one)
+                    || (character_value_at_position == '0' && keep_values_starting_with_zero)
+                {
+                    updated_values.push(value.clone());
                 }
             }
             values_to_process = updated_values;
