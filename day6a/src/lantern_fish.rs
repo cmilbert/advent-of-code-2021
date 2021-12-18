@@ -15,6 +15,12 @@ pub struct LanternFishSchool {
     pub fish: Vec<LanternFish>,
 }
 
+impl Default for LanternFishSchool {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl LanternFishSchool {
     pub fn new() -> Self {
         LanternFishSchool { fish: Vec::new() }
@@ -27,7 +33,7 @@ impl LanternFishSchool {
         for line in reader.lines() {
             let line_values: Vec<usize> = line
                 .unwrap()
-                .split(",")
+                .split(',')
                 .map(|s| s.trim())
                 .filter(|s| !s.is_empty())
                 .map(|s| s.parse().unwrap())
