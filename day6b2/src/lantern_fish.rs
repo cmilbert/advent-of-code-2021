@@ -11,6 +11,12 @@ pub struct LanternFishSchool {
     pub spawning_buckets: Vec<usize>,
 }
 
+impl Default for LanternFishSchool {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl LanternFishSchool {
     pub fn new() -> Self {
         LanternFishSchool {
@@ -25,7 +31,7 @@ impl LanternFishSchool {
         for line in reader.lines() {
             let line_values: Vec<usize> = line
                 .unwrap()
-                .split(",")
+                .split(',')
                 .map(|s| s.trim())
                 .filter(|s| !s.is_empty())
                 .map(|s| s.parse().unwrap())
@@ -49,19 +55,18 @@ impl LanternFishSchool {
             self.spawning_buckets[i - 1] = self.spawning_buckets[i];
         }
 
-        self.spawning_buckets[DAYS_TO_SPAWN - 1] =
-            self.spawning_buckets[DAYS_TO_SPAWN - 1] + zero_value;
+        self.spawning_buckets[DAYS_TO_SPAWN - 1] += zero_value;
         self.spawning_buckets[DAYS_TO_SPAWN_FOR_NEW_FISH - 1] = zero_value;
     }
 
     pub fn get_total_fish(&self) -> usize {
         let sum: usize = self.spawning_buckets.iter().sum();
-        return sum;
+        sum
     }
 }
 
 #[cfg(test)]
-mod tests_day6a {
+mod tests_day6b2 {
     use super::*;
 
     #[test]

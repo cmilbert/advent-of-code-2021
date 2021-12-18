@@ -10,6 +10,12 @@ pub struct CrabArmy {
     pub crabs: Vec<Crab>,
 }
 
+impl Default for CrabArmy {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl CrabArmy {
     pub fn new() -> Self {
         CrabArmy { crabs: Vec::new() }
@@ -22,7 +28,7 @@ impl CrabArmy {
         for line in reader.lines() {
             self.crabs = line
                 .unwrap()
-                .split(",")
+                .split(',')
                 .map(|s| s.trim())
                 .filter(|s| !s.is_empty())
                 .map(|s| s.parse().unwrap())
@@ -35,8 +41,8 @@ impl CrabArmy {
     }
 
     pub fn median(&mut self) -> f32 {
-        self.crabs.sort();
-        return self.crabs[self.crabs.len() / 2] as f32;
+        self.crabs.sort_unstable();
+        self.crabs[self.crabs.len() / 2] as f32
     }
 
     pub fn calculate_fuel_usage(&mut self) -> usize {
@@ -47,12 +53,12 @@ impl CrabArmy {
             fuel_usage += (self.crabs[i] as f32 - median).abs() as usize;
         }
 
-        return fuel_usage;
+        fuel_usage
     }
 }
 
 #[cfg(test)]
-mod tests_day6a {
+mod tests_day7a {
     use super::*;
 
     #[test]
