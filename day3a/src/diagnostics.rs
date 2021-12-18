@@ -4,6 +4,11 @@ pub struct PowerDiagnostic {
     pub power_consumption: isize,
 }
 
+impl Default for PowerDiagnostic {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 impl PowerDiagnostic {
     pub fn new() -> Self {
         PowerDiagnostic {
@@ -13,7 +18,7 @@ impl PowerDiagnostic {
         }
     }
 
-    pub fn calculate_gamma_rate(&mut self, binary_values: &Vec<String>) {
+    pub fn calculate_gamma_rate(&mut self, binary_values: &[String]) {
         let mut gamma_string: String = "".to_owned();
 
         for i in 0..binary_values[0].len() {
@@ -29,9 +34,9 @@ impl PowerDiagnostic {
             }
 
             if count_of_one > count_of_zero {
-                gamma_string.push_str("1");
+                gamma_string.push('1');
             } else {
-                gamma_string.push_str("0");
+                gamma_string.push('0');
             }
         }
 
@@ -39,7 +44,7 @@ impl PowerDiagnostic {
         self.calculate_power_consumption();
     }
 
-    pub fn calculate_epsilon_rate(&mut self, binary_values: &Vec<String>) {
+    pub fn calculate_epsilon_rate(&mut self, binary_values: &[String]) {
         let mut epsilon_string: String = "".to_owned();
 
         for i in 0..binary_values[0].len() {
@@ -55,9 +60,9 @@ impl PowerDiagnostic {
             }
 
             if count_of_one < count_of_zero {
-                epsilon_string.push_str("1");
+                epsilon_string.push('1');
             } else {
-                epsilon_string.push_str("0");
+                epsilon_string.push('0');
             }
         }
 
