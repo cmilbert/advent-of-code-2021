@@ -10,6 +10,12 @@ pub struct CrabArmy {
     pub crabs: Vec<Crab>,
 }
 
+impl Default for CrabArmy {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl CrabArmy {
     pub fn new() -> Self {
         CrabArmy { crabs: Vec::new() }
@@ -22,7 +28,7 @@ impl CrabArmy {
         for line in reader.lines() {
             self.crabs = line
                 .unwrap()
-                .split(",")
+                .split(',')
                 .map(|s| s.trim())
                 .filter(|s| !s.is_empty())
                 .map(|s| s.parse().unwrap())
@@ -31,7 +37,7 @@ impl CrabArmy {
     }
 
     pub fn calculate_fuel_usage(&mut self) -> usize {
-        self.crabs.sort();
+        self.crabs.sort_unstable();
         let minimum_position: usize = self.crabs[0];
         let maximum_position: usize = self.crabs[self.crabs.len() - 1];
         let mut minimum_fuel_cost: usize = 0;
@@ -43,7 +49,7 @@ impl CrabArmy {
             }
         }
 
-        return minimum_fuel_cost;
+        minimum_fuel_cost
     }
 
     fn calculate_fuel_usage_for_point(&self, position: usize) -> usize {
@@ -51,16 +57,16 @@ impl CrabArmy {
 
         for i in 0..self.crabs.len() {
             let positions_moved: usize = (self.crabs[i] as f32 - position as f32).abs() as usize;
-            let fuel_cost_for_move: usize = (0..=positions_moved).fold(0, |a, b| a + b);
+            let fuel_cost_for_move: usize = (0..=positions_moved).sum();
             fuel_usage += fuel_cost_for_move;
         }
 
-        return fuel_usage;
+        fuel_usage
     }
 }
 
 #[cfg(test)]
-mod tests_day6a {
+mod tests_day7b {
     use super::*;
 
     #[test]
