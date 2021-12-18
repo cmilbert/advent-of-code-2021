@@ -16,6 +16,12 @@ pub struct HydrothermalMap {
     point_map: Vec<Vec<usize>>,
 }
 
+impl Default for HydrothermalMap {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl HydrothermalMap {
     pub fn new() -> Self {
         HydrothermalMap {
@@ -54,7 +60,7 @@ impl HydrothermalMap {
     fn parse_line_segment(&self, line: String) -> HydrothermalLineSegment {
         let modified_line: String = line.replace(" -> ", ","); // Replace arrow with comma
         let line_values: Vec<usize> = modified_line
-            .split(",")
+            .split(',')
             .map(|s| s.trim())
             .filter(|s| !s.is_empty())
             .map(|s| s.parse().unwrap())
@@ -65,13 +71,7 @@ impl HydrothermalMap {
         let x2: usize = line_values[2];
         let y2: usize = line_values[3];
 
-        let new_segment = HydrothermalLineSegment {
-            x1: x1,
-            y1: y1,
-            x2: x2,
-            y2: y2,
-        };
-        return new_segment;
+        HydrothermalLineSegment { x1, y1, x2, y2 }
     }
 
     pub fn populate_points_from_line_segments(&mut self) {
@@ -144,7 +144,7 @@ impl HydrothermalMap {
             }
         }
 
-        return total_intersects;
+        total_intersects
     }
 
     pub fn print_hydorthermal_map(&self) {
@@ -157,7 +157,7 @@ impl HydrothermalMap {
                     print!("{} ", point);
                 }
             }
-            println!("");
+            println!();
         }
     }
 }
