@@ -18,6 +18,12 @@ pub struct BingoGame {
     boards: Vec<BingoBoard>,
 }
 
+impl Default for BingoGame {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl BingoGame {
     pub fn new() -> Self {
         BingoGame {
@@ -38,14 +44,13 @@ impl BingoGame {
         self.draws = self.parse_draws(file_lines[0].to_string());
         file_lines.drain(0..1);
 
-        while file_lines.len() > 0 {
+        while !file_lines.is_empty() {
             file_lines.drain(0..1); // Drain new line before board
             let mut new_board: Vec<Vec<BingoCell>> = Vec::new();
 
             // For each of 5 rows create a new board row
-            for i in 0..5 {
-                let new_row: Vec<BingoCell> =
-                    self.parse_bingo_board_line(file_lines[i].to_string());
+            for line in file_lines.iter().take(5) {
+                let new_row: Vec<BingoCell> = self.parse_bingo_board_line(line.to_string());
                 new_board.push(new_row);
             }
             file_lines.drain(0..5); // Remove 6 lines
@@ -55,7 +60,7 @@ impl BingoGame {
 
     fn parse_draws(&self, draw_line: String) -> Vec<usize> {
         return draw_line
-            .split(",")
+            .split(',')
             .map(|s| s.trim())
             .filter(|s| !s.is_empty())
             .map(|s| s.parse().unwrap())
@@ -73,7 +78,7 @@ impl BingoGame {
             };
             return_vector.push(bingo_cell);
         }
-        return return_vector;
+        return_vector
     }
 
     fn process_draw(&mut self, number_drawn: usize) {
@@ -91,20 +96,20 @@ impl BingoGame {
     pub fn get_winning_board_positions(&self) -> Vec<usize> {
         let mut board_positions: Vec<usize> = Vec::new();
         for (board_position, board) in self.boards.iter().enumerate() {
-            let row_win = self.check_board_rows(&board);
-            let column_win = self.check_board_columns(&board);
+            let row_win = self.check_board_rows(board);
+            let column_win = self.check_board_columns(board);
             if row_win || column_win {
                 board_positions.push(board_position);
             }
         }
-        return board_positions;
+        board_positions
     }
 
-    fn check_board_rows(&self, bingo_board: &BingoBoard) -> bool {
-        for i in 0..bingo_board.len() {
+    fn check_board_rows(&self, bingo_board: &[Vec<BingoCell>]) -> bool {
+        for row in bingo_board {
             let mut row_count: usize = 0;
-            for j in 0..bingo_board[i].len() {
-                if bingo_board[i][j].number_called == true {
+            for cell in row {
+                if cell.number_called {
                     row_count += 1;
                 }
             }
@@ -112,37 +117,37 @@ impl BingoGame {
                 return true;
             }
         }
-        return false;
+        false
     }
 
-    fn check_board_columns(&self, bingo_board: &BingoBoard) -> bool {
+    fn check_board_columns(&self, bingo_board: &[Vec<BingoCell>]) -> bool {
         let mut column_counts: Vec<usize> = vec![0; bingo_board.len()];
         for i in 0..bingo_board.len() {
-            for j in 0..bingo_board[i].len() {
-                if bingo_board[j][i].number_called == true {
+            for cell in bingo_board.iter().take(bingo_board[i].len()) {
+                if cell[i].number_called {
                     column_counts[i] += 1;
                 }
             }
         }
 
-        for i in 0..column_counts.len() {
-            if column_counts[i] == BINGO_BOARD_SIZE {
+        for column_count in &column_counts {
+            if column_count == &BINGO_BOARD_SIZE {
                 return true;
             }
         }
-        return false;
+        false
     }
 
-    pub fn unmarked_cell_sum(&self, bingo_board: &BingoBoard) -> usize {
+    pub fn unmarked_cell_sum(&self, bingo_board: &[Vec<BingoCell>]) -> usize {
         let mut unmarked_sum: usize = 0;
-        for i in 0..bingo_board.len() {
-            for j in 0..bingo_board[i].len() {
-                if bingo_board[i][j].number_called == false {
-                    unmarked_sum += bingo_board[i][j].number_in_cell;
+        for row in bingo_board {
+            for cell in row {
+                if !cell.number_called {
+                    unmarked_sum += cell.number_in_cell;
                 }
             }
         }
-        return unmarked_sum;
+        unmarked_sum
     }
 
     pub fn play_until_last_winner(&mut self) -> usize {
@@ -154,20 +159,20 @@ impl BingoGame {
 
             if draw_position > BINGO_BOARD_SIZE {
                 let mut round_winning_board_positions = self.get_winning_board_positions();
-                if round_winning_board_positions.len() > 0 {
+                if !round_winning_board_positions.is_empty() {
                     let last_index: usize = *round_winning_board_positions.last().unwrap();
                     let unmarked_cell_sum: usize =
                         self.unmarked_cell_sum(self.boards.get(last_index).unwrap());
                     last_winning_value = unmarked_cell_sum * number_drawn;
                     round_winning_board_positions.reverse();
-                    for i in 0..round_winning_board_positions.len() {
-                        self.boards.remove(round_winning_board_positions[i]);
+                    for round_winning_board_position in &round_winning_board_positions {
+                        self.boards.remove(*round_winning_board_position);
                     }
                 }
             }
         }
 
-        return last_winning_value;
+        last_winning_value
     }
 }
 
