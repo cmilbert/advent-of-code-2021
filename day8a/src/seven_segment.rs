@@ -16,6 +16,12 @@ pub struct SevenSegment {
     pub output_values: Vec<Vec<String>>,
 }
 
+impl Default for SevenSegment {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl SevenSegment {
     pub fn new() -> Self {
         SevenSegment {
@@ -33,14 +39,14 @@ impl SevenSegment {
             // Input values: split on pipe, split left hand side on space
             let line_input_output_strings: Vec<String> = line
                 .unwrap()
-                .split("|")
+                .split('|')
                 .map(|s| s.trim())
                 .filter(|s| !s.is_empty())
                 .map(|s| s.parse().unwrap())
                 .collect();
 
             let line_input_values: Vec<String> = line_input_output_strings[0]
-                .split(" ")
+                .split(' ')
                 .map(|s| s.trim())
                 .filter(|s| !s.is_empty())
                 .map(|s| s.parse().unwrap())
@@ -48,7 +54,7 @@ impl SevenSegment {
             self.input_values.push(line_input_values);
 
             let line_output_values: Vec<String> = line_input_output_strings[1]
-                .split(" ")
+                .split(' ')
                 .map(|s| s.trim())
                 .filter(|s| !s.is_empty())
                 .map(|s| s.parse().unwrap())
@@ -70,12 +76,12 @@ impl SevenSegment {
                 }
             }
         }
-        return count;
+        count
     }
 }
 
 #[cfg(test)]
-mod tests_day6a {
+mod tests_day8a {
     use super::*;
 
     #[test]
