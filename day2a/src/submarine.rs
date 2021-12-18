@@ -6,8 +6,8 @@ pub struct Submarine {
 impl Submarine {
     pub fn new(horizontal_position: u32, vertical_position: i32) -> Self {
         Submarine {
-            horizontal_position: horizontal_position,
-            vertical_position: vertical_position,
+            horizontal_position,
+            vertical_position,
         }
     }
 
@@ -18,7 +18,7 @@ impl Submarine {
     }
 
     fn process_instruction(&mut self, instruction: String) {
-        let split = instruction.split(" ");
+        let split = instruction.split(' ');
         let split_vec = split.collect::<Vec<&str>>();
         let command = split_vec[0].to_lowercase();
         let count = split_vec[1];
@@ -44,7 +44,7 @@ impl Submarine {
     }
 
     pub fn multiply_positions(&self) -> i32 {
-        return (self.horizontal_position as i32 * self.vertical_position).abs();
+        (self.horizontal_position as i32 * self.vertical_position).abs()
     }
 }
 
