@@ -1,0 +1,15 @@
+[package]
+name = "cmilbert_aoc_day9a"
+version = "0.1.0"
+edition = "2021"
+authors = ["Chris Milbert <cmilbert@>"]
+
+[lib]
+name = "cmilbert_aoc_day9a"
+path = "src/lava_tubes.rs"
+
+[[bin]]
+name = "cmilbert_aoc_day9a"
+path = "src/main.rs"
+
+[dependencies]
