@@ -13,4 +13,3 @@ name = "cmilbert_aoc_day8b"
 path = "src/main.rs"
 
 [dependencies]
-lazy_static = "1.4.0"
