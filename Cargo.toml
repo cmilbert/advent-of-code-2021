@@ -8,5 +8,5 @@ members = [
     "day6a", "day6b", "day6b2",
     "day7a", "day7b",
     "day8a", "day8b",
-    "day9a"
+    "day9a", "day9b"
 ]
