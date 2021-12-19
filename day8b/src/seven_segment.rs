@@ -286,7 +286,7 @@ impl SevenSegment {
 }
 
 #[cfg(test)]
-mod tests_day8a {
+mod tests_day8b {
     use super::*;
 
     #[test]
